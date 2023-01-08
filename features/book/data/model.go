@@ -14,6 +14,15 @@ type Books struct {
 	UserID      uint
 }
 
+type User struct {
+	gorm.Model
+	Nama     string
+	Email    string
+	Alamat   string
+	HP       string
+	Password string
+}
+
 func ToCore(data Books) book.Core {
 	return book.Core{
 		ID:          data.ID,

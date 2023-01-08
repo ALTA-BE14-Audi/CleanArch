@@ -51,5 +51,47 @@ func (bs *bookSrv) Add(token interface{}, newBook book.Core) (book.Core, error) 
 
 }
 func (bs *bookSrv) Update(token interface{}, bookID int, updatedData book.Core) (book.Core, error) {
-	return book.Core{}, nil
+	userID := helper.ExtractToken(token)
+
+	res, err := bs.data.Update(userID, bookID, updatedData)
+	if err != nil {
+		msg := ""
+		if strings.Contains(err.Error(), "not found") {
+			msg = "buku tidak ditemukan"
+		} else {
+			msg = "terjadi kesalahan pada server"
+		}
+		return book.Core{}, errors.New(msg)
+	}
+	return res, nil
+}
+
+func (bs *bookSrv) GetAll() ([]book.Core, error) {
+	res, err := bs.data.GetAll()
+	if err != nil {
+		msg := ""
+		if strings.Contains(err.Error(), "not found") {
+			msg = "buku tidak ditemukan"
+		} else {
+			msg = "terjadi kesalahan pada server"
+		}
+		return []book.Core{}, errors.New(msg)
+	}
+	// fmt.Println(res)
+	return res, nil
+}
+
+func (bs *bookSrv) Delete(token interface{}, bookID int) error {
+	userID := helper.ExtractToken(token)
+	err := bs.data.Delete(userID, bookID)
+	if err != nil {
+		msg := ""
+		if strings.Contains(err.Error(), "not found") {
+			msg = "buku tidak ditemukan"
+		} else {
+			msg = "terjadi kesalahan pada server"
+		}
+		return errors.New(msg)
+	}
+	return nil
 }

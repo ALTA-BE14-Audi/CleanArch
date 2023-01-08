@@ -1,8 +1,8 @@
 package config
 
 import (
-	book "api/features/book/data"
-	user "api/features/user/data"
+	bookz "api/features/book/data"
+	userz "api/features/user/data"
 	"fmt"
 	"log"
 
@@ -23,6 +23,6 @@ func InitDB(ac AppConfig) *gorm.DB {
 }
 
 func Migrate(db *gorm.DB) {
-	db.AutoMigrate(user.User{})
-	db.AutoMigrate(book.Books{})
+	db.AutoMigrate(userz.User{})
+	db.AutoMigrate(bookz.Books{})
 }

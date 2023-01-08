@@ -15,8 +15,9 @@ type UserHandler interface {
 	Login() echo.HandlerFunc
 	Register() echo.HandlerFunc
 	Profile() echo.HandlerFunc
-	// Deactive() echo.HandlerFunc
 	// Update() echo.HandlerFunc
+	// Deactive() echo.HandlerFunc
+
 }
 
 type UserService interface {
