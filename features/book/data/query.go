@@ -45,6 +45,20 @@ func (bd *bookData) Update(bookID int, updatedData book.Core) (book.Core, error)
 
 	return ToCore(cnv), nil
 }
+func (bd *bookData) GetAll() ([]book.Core, error) {
+	var books []Books
+	err := bd.db.Find(&books).Error
+	if err != nil {
+		return nil, err
+	}
+
+	var bookCores []book.Core
+	for _, b := range books {
+		bookCores = append(bookCores, ToCore(b))
+	}
+
+	return bookCores, nil
+}
 
 // func (bd *bookData) Delete(bookID int, userID int) error {
 // 	return nil

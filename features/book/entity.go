@@ -4,9 +4,9 @@ import "github.com/labstack/echo/v4"
 
 type Core struct {
 	ID          uint
-	Judul       string `validate:"required,alpha"`
+	Judul       string `validate:"required"`
 	TahunTerbit int    `validate:"required"`
-	Penulis     string `validate:"required,alpha"`
+	Penulis     string `validate:"required"`
 	Pemilik     string
 }
 
@@ -20,6 +20,7 @@ type BookHandler interface {
 type BookService interface {
 	Add(token interface{}, newBook Core) (Core, error)
 	Update(token interface{}, bookID int, updatedData Core) (Core, error)
+	GetAll(token interface{}) ([]Core, error)
 	// Delete(token interface{}, bookID int) error
 	// MyBook(token interface{}) ([]Core, error)
 }
@@ -27,6 +28,7 @@ type BookService interface {
 type BookData interface {
 	Add(userID int, newBook Core) (Core, error)
 	Update(bookID int, updatedData Core) (Core, error)
+	GetAll() ([]Core, error)
 	// Delete(bookID int, userID int) error
 	// MyBook(userID int) ([]Core, error)
 }
