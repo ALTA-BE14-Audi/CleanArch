@@ -32,11 +32,11 @@ func ToCore(data Books) book.Core {
 	}
 }
 
-func CoreToData(data book.Core) Books {
+func CoreToData(core book.Core) Books {
 	return Books{
-		Model:       gorm.Model{ID: data.ID},
-		Judul:       data.Judul,
-		Penulis:     data.Penulis,
-		TahunTerbit: data.TahunTerbit,
+		Model:       gorm.Model{ID: core.ID},
+		Judul:       core.Judul,
+		Penulis:     core.Penulis,
+		TahunTerbit: core.TahunTerbit,
 	}
 }

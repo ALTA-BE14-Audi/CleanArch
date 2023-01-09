@@ -120,6 +120,18 @@ func (bd *bookData) Delete(userID int, bookID int) error {
 	return nil
 }
 
-// func (bd *bookData) MyBook(userID int) ([]book.Core, error) {
-// 	return nil, nil
-// }
+func (bd *bookData) MyBook(userID int) ([]book.Core, error) {
+	res := []Books{}
+	err := bd.db.Where("user_id = ?", userID).Find(&res).Error
+	if err != nil {
+		log.Println("no result")
+		return []book.Core{}, errors.New("data not found")
+	}
+	result := []book.Core{}
+	for i := 0; i < len(res); i++ {
+		tmp := res[i]
+		result = append(result, ToCore(tmp))
+	}
+
+	return result, nil
+}

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"api/features/book"
 	"api/features/user"
 	"net/http"
 	"strings"
@@ -30,6 +31,22 @@ type BookResponse struct {
 	TahunTerbit int    `json:"tahun_terbit"`
 	Penulis     string `json:"penulis"`
 	Pemilik     string `json:"pemilik"`
+}
+
+type AddBookReponse struct {
+	ID          uint   `json:"id"`
+	Judul       string `json:"title"`
+	TahunTerbit int    `json:"published_year"`
+	Penulis     string `json:"written by"`
+}
+
+func MyBookResponse(data book.Core) AddBookReponse {
+	return AddBookReponse{
+		ID:          data.ID,
+		Judul:       data.Judul,
+		TahunTerbit: data.TahunTerbit,
+		Penulis:     data.Penulis,
+	}
 }
 
 func PrintSuccessReponse(code int, message string, data ...interface{}) (int, interface{}) {

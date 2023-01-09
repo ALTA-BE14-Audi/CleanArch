@@ -96,3 +96,25 @@ func (bh *bookHandle) Delete() echo.HandlerFunc {
 		})
 	}
 }
+
+func (bh *bookHandle) MyBook() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		userID := c.Get("user")
+
+		res, err := bh.srv.MyBook(userID)
+		if err != nil {
+			log.Println("no book found ", err.Error())
+			return c.JSON(http.StatusNotFound, map[string]interface{}{
+				"message": "no result",
+			})
+		}
+		result := []AddBookReponse{}
+		for i := 0; i < len(res); i++ {
+			result = append(result, MyBookResponse(res[i]))
+		}
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"data":    result,
+			"message": "show all book list succesfull",
+		})
+	}
+}
