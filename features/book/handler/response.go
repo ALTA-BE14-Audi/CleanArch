@@ -14,6 +14,32 @@ type UserReponse struct {
 	Alamat string `json:"alamat"`
 	HP     string `json:"hp"`
 }
+type BookResponse struct {
+	ID          uint   `json:"id"`
+	Judul       string `json:"judul"`
+	TahunTerbit int    `json:"tahun_terbit"`
+	Penulis     string `json:"penulis"`
+	Pemilik     string `json:"pemilik"`
+}
+
+type BookList struct {
+	Judul   string `json:"title"`
+	Penulis string `json:"written by"`
+	Pemilik string `json:"owner name"`
+}
+
+type UpdateBook struct {
+	Judul       string `json:"title"`
+	TahunTerbit int    `json:"published_year"`
+	Penulis     string `json:"written by"`
+}
+
+type AddBookReponse struct {
+	ID          uint   `json:"id"`
+	Judul       string `json:"judul"`
+	TahunTerbit int    `json:"tahun_terbit"`
+	Penulis     string `json:"pemilik"`
+}
 
 func ToResponse(data user.Core) UserReponse {
 	return UserReponse{
@@ -23,21 +49,6 @@ func ToResponse(data user.Core) UserReponse {
 		Alamat: data.Alamat,
 		HP:     data.HP,
 	}
-}
-
-type BookResponse struct {
-	ID          uint   `json:"id"`
-	Judul       string `json:"judul"`
-	TahunTerbit int    `json:"tahun_terbit"`
-	Penulis     string `json:"penulis"`
-	Pemilik     string `json:"pemilik"`
-}
-
-type AddBookReponse struct {
-	ID          uint   `json:"id"`
-	Judul       string `json:"title"`
-	TahunTerbit int    `json:"published_year"`
-	Penulis     string `json:"written by"`
 }
 
 func MyBookResponse(data book.Core) AddBookReponse {

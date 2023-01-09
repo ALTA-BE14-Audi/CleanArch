@@ -13,7 +13,7 @@ type Core struct {
 type BookHandler interface {
 	Add() echo.HandlerFunc
 	Update() echo.HandlerFunc
-	// MyBook() echo.HandlerFunc
+	MyBook() echo.HandlerFunc
 	GetAll() echo.HandlerFunc
 	Delete() echo.HandlerFunc
 }
@@ -23,7 +23,7 @@ type BookService interface {
 	Update(token interface{}, bookID int, updatedData Core) (Core, error)
 	GetAll() ([]Core, error)
 	Delete(token interface{}, bookID int) error
-	// MyBook(token interface{}) ([]Core, error)
+	MyBook(token interface{}) ([]Core, error)
 }
 
 type BookData interface {
@@ -31,5 +31,5 @@ type BookData interface {
 	Update(token int, bookID int, updatedData Core) (Core, error)
 	GetAll() ([]Core, error)
 	Delete(bookID int, userID int) error
-	// MyBook(userID int) ([]Core, error)
+	MyBook(userID int) ([]Core, error)
 }

@@ -42,6 +42,7 @@ func main() {
 	e.GET("/books", bookHdl.GetAll(), middleware.JWT([]byte(config.JWT_KEY)))
 	e.PATCH("/books/:id", bookHdl.Update(), middleware.JWT([]byte(config.JWT_KEY)))
 	e.DELETE("/books/:id", bookHdl.Delete(), middleware.JWT([]byte(config.JWT_KEY)))
+	e.GET("/books", bookHdl.MyBook(), middleware.JWT([]byte(config.JWT_KEY)))
 
 	if err := e.Start(":8000"); err != nil {
 		log.Println(err.Error())
