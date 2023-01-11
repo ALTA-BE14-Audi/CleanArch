@@ -2,6 +2,7 @@ package services
 
 import (
 	"api/features/user"
+	"api/helper"
 	"api/mocks"
 	"testing"
 
@@ -26,20 +27,25 @@ func TestRegister(t *testing.T) {
 	data.AssertExpectations(t)
 }
 
+// t.Run("Tidak ditemukan", func(t *testing.T))
+
 func TestLogin(t *testing.T) {
 	data := mocks.NewUserData(t)
 	inputData := user.Core{Email: "audiz@mail.com", Password: "asdf"}
 	resData := user.Core{ID: uint(1), Nama: "audiz", Email: "audiz@mail.com", Alamat: "bangil", HP: "0814374234", Password: "asdf"}
-	data.On("Login", mock.Anything).Return(resData, nil).Once()
+	hashed, _ := helper.Generate("asdf")
+	resData.Password = hashed
+	data.On("Login", "audiz@mail.com").Return(resData, nil)
 
 	// Create instance of service object and call login function
 	srv := New(data)
-	res, err, _ := srv.Login(inputData.Email, inputData.Password)
+	token, res, err := srv.Login(inputData.Email, "asdf")
 
 	// Assert that the returned result and error are as expected
 	assert.Nil(t, err)
+	assert.NotEmpty(t, token)
 	assert.Equal(t, resData.ID, res.ID)
-	assert.Equal(t, resData.Nama, res.Nama)
+	data.AssertExpectations(t)
 }
 
 func TestProfile(t *testing.T) {

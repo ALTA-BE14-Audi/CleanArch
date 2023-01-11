@@ -24,7 +24,7 @@ func main() {
 	userSrv := services.New(userData)
 	userHdl := handler.New(userSrv)
 
-	bookData := bd.New(db)
+	bookData := bd.NewStorage(db)
 	bookSrv := bsrv.New(bookData)
 	bookHdl := bhl.New(bookSrv)
 
