@@ -14,7 +14,7 @@ type bookHandle struct {
 	srv book.BookService
 }
 
-func New(bs book.BookService) book.BookHandler {
+func New(bs book.BookService) *bookHandle {
 	return &bookHandle{
 		srv: bs,
 	}
