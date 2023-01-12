@@ -29,7 +29,7 @@ func ReadEnv() *AppConfig {
 	app := AppConfig{}
 	isRead := true
 
-	if val, found := os.LookupEnv("JWT_KEY"); found {
+	if val, found := os.LookupEnv("JWTKEY"); found {
 		app.jwtKey = val
 		isRead = false
 	}
