@@ -75,11 +75,6 @@ func (bh *bookHandle) GetAll() echo.HandlerFunc {
 	}
 }
 
-// // MyBook implements book.BookHandler
-// func (*bookHandle) MyBook() echo.HandlerFunc {
-// 	panic("unimplemented")
-// }
-
 func (bh *bookHandle) Delete() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ParamBookID := c.Param("id")

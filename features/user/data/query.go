@@ -29,8 +29,15 @@ func (uq *userQuery) Login(email string) (user.Core, error) {
 	return ToCore(res), nil
 }
 func (uq *userQuery) Register(newUser user.Core) (user.Core, error) {
+	cekDupe := CoreToData(newUser)
+	err := uq.db.Where("email=?", cekDupe.Email).First(&cekDupe).Error
+	if err == nil {
+		log.Println("email already registered")
+		return user.Core{}, errors.New("duplicated")
+	}
+
 	cnv := CoreToData(newUser)
-	err := uq.db.Create(&cnv).Error
+	err = uq.db.Create(&cnv).Error
 	if err != nil {
 		return user.Core{}, err
 	}
@@ -41,17 +48,40 @@ func (uq *userQuery) Register(newUser user.Core) (user.Core, error) {
 }
 func (uq *userQuery) Profile(id uint) (user.Core, error) {
 	res := User{}
-	if err := uq.db.Where("id = ?", id).First(&res).Error; err != nil {
+	err := uq.db.Where("id = ?", id).First(&res).Error
+	if err != nil {
 		log.Println("Get By ID query error", err.Error())
 		return user.Core{}, err
 	}
 
 	return ToCore(res), nil
 }
+func (uq *userQuery) Update(id int, updateData user.Core) (user.Core, error) {
+	res := CoreToData(updateData)
+	qry := uq.db.Where("id = ?", id).Updates(&res)
+	if qry.RowsAffected <= 0 {
+		log.Println("update book query error : data not found")
+		return user.Core{}, errors.New("not found")
+	}
+	err := qry.Error
+	if err != nil {
+		log.Println("update book query error :", err.Error())
+		return user.Core{}, err
+	}
+	return ToCore(res), nil
+}
+func (uq *userQuery) Delete(userID int) error {
 
-// func (uq *userQuery) Update(id uint, updateData user.Core) (user.Core, error) {
-
-// }
-// func (uq *userQuery) Deactive(id uint) error {
-
-// }
+	qry := uq.db.Unscoped().Delete(&User{}, userID)
+	rowAffect := qry.RowsAffected
+	if rowAffect <= 0 {
+		log.Println("no data processed")
+		return errors.New("no book has delete")
+	}
+	err := qry.Error
+	if err != nil {
+		log.Println("delete query error", err.Error())
+		return errors.New("book cannot delete")
+	}
+	return nil
+}

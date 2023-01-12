@@ -71,6 +71,29 @@ func (_m *BookData) GetAll() ([]book.Core, error) {
 	return r0, r1
 }
 
+// MyBook provides a mock function with given fields: userID
+func (_m *BookData) MyBook(userID int) ([]book.Core, error) {
+	ret := _m.Called(userID)
+
+	var r0 []book.Core
+	if rf, ok := ret.Get(0).(func(int) []book.Core); ok {
+		r0 = rf(userID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]book.Core)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(int) error); ok {
+		r1 = rf(userID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Update provides a mock function with given fields: token, bookID, updatedData
 func (_m *BookData) Update(token int, bookID int, updatedData book.Core) (book.Core, error) {
 	ret := _m.Called(token, bookID, updatedData)

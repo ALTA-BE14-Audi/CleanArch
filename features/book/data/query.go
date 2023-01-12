@@ -141,7 +141,7 @@ func (bd *bookData) Delete(userID int, bookID int) error {
 		return errors.New("book not found")
 	}
 
-	qry := bd.db.Unscoped().Delete(&Books{}, bookID) //Hard Delete
+	qry := bd.db.Unscoped().Delete(&Books{}, bookID)
 	rowAffect := qry.RowsAffected
 	if rowAffect <= 0 {
 		log.Println("no data processed")

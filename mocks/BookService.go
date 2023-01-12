@@ -71,6 +71,29 @@ func (_m *BookService) GetAll() ([]book.Core, error) {
 	return r0, r1
 }
 
+// MyBook provides a mock function with given fields: token
+func (_m *BookService) MyBook(token interface{}) ([]book.Core, error) {
+	ret := _m.Called(token)
+
+	var r0 []book.Core
+	if rf, ok := ret.Get(0).(func(interface{}) []book.Core); ok {
+		r0 = rf(token)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]book.Core)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(interface{}) error); ok {
+		r1 = rf(token)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Update provides a mock function with given fields: token, bookID, updatedData
 func (_m *BookService) Update(token interface{}, bookID int, updatedData book.Core) (book.Core, error) {
 	ret := _m.Called(token, bookID, updatedData)

@@ -16,3 +16,11 @@ func Generate(password string) (string, error) {
 
 	return string(hashed), nil
 }
+
+func CheckPassword(hashed, password string) error {
+	if err := bcrypt.CompareHashAndPassword([]byte(hashed), []byte(password)); err != nil {
+		log.Println("login compare", err.Error())
+		return errors.New("password tidak sesuai ")
+	}
+	return nil
+}

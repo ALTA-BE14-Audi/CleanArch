@@ -1,28 +1,22 @@
 package services
 
 import (
-	"api/config"
 	"api/features/user"
 	"api/helper"
 	"errors"
 	"log"
 	"strings"
-	"time"
 
-	"github.com/go-playground/validator/v10"
-	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type userUseCase struct {
 	qry user.UserData
-	vld *validator.Validate
 }
 
 func New(ud user.UserData) user.UserService {
 	return &userUseCase{
 		qry: ud,
-		vld: validator.New(),
 	}
 }
 
@@ -43,18 +37,20 @@ func (uuc *userUseCase) Login(email, password string) (string, user.Core, error)
 		return "", user.Core{}, errors.New("password tidak sesuai")
 	}
 
-	claims := jwt.MapClaims{}
-	claims["authorized"] = true
-	claims["userID"] = res.ID
-	claims["exp"] = time.Now().Add(time.Hour * 1).Unix() //Token expires after 1 hour
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	useToken, _ := token.SignedString([]byte(config.JWT_KEY))
+	// claims := jwt.MapClaims{}
+	// claims["authorized"] = true
+	// claims["userID"] = res.ID
+	// claims["exp"] = time.Now().Add(time.Hour * 1).Unix() //Token expires after 1 hour
+	// token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	// useToken, _ := token.SignedString([]byte(config.JWT_KEY))
+	useToken, _ := helper.GenerateToken(int(res.ID))
 
 	return useToken, res, nil
 
 }
 func (uuc *userUseCase) Register(newUser user.Core) (user.Core, error) {
 	hashed, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
+	newUser.Password = string(hashed)
 	if err != nil {
 		log.Println("bcrypt error ", err.Error())
 		return user.Core{}, errors.New("password process error")
@@ -62,13 +58,10 @@ func (uuc *userUseCase) Register(newUser user.Core) (user.Core, error) {
 	newUser.Password = string(hashed)
 	res, err := uuc.qry.Register(newUser)
 	if err != nil {
-		msg := ""
 		if strings.Contains(err.Error(), "duplicated") {
-			msg = "data sudah terdaftar"
-		} else {
-			msg = "terdapat masalah pada server"
+			return user.Core{}, errors.New("data already exist")
 		}
-		return user.Core{}, errors.New(msg)
+		return user.Core{}, errors.New("internal server error")
 	}
 
 	return res, nil
@@ -82,11 +75,32 @@ func (uuc *userUseCase) Profile(token interface{}) (user.Core, error) {
 	if err != nil {
 		msg := ""
 		if strings.Contains(err.Error(), "not found") {
-			msg = "data tidak ditemukan"
+			msg = "data not found"
 		} else {
-			msg = "terdapat masalah pada server"
+			msg = "server internal error"
 		}
 		return user.Core{}, errors.New(msg)
 	}
 	return res, nil
+}
+func (uuc *userUseCase) Update(token interface{}, updateData user.Core) (user.Core, error) {
+	id := helper.ExtractToken(token)
+	res, err := uuc.qry.Update(id, updateData)
+	if err != nil {
+		log.Println("query error", err.Error())
+		return user.Core{}, errors.New("query error, update fail")
+	}
+	return res, nil
+}
+func (uuc *userUseCase) Delete(token interface{}) error {
+	userID := helper.ExtractToken(token)
+	if userID <= 0 {
+		return errors.New("data not found")
+	}
+	err := uuc.qry.Delete(userID)
+	if err != nil {
+		log.Println("query error", err.Error())
+		return errors.New("query error, delete account fail")
+	}
+	return nil
 }

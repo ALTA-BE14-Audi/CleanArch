@@ -65,21 +65,6 @@ func (bs *bookSrv) Update(token interface{}, bookID int, updatedData book.Core) 
 	return res, nil
 }
 
-// func (bs *bookSrv) GetAll() ([]book.Core, error) {
-// 	res, err := bs.data.GetAll()
-// 	if err != nil {
-// 		msg := ""
-// 		if strings.Contains(err.Error(), "not found") {
-// 			msg = "buku tidak ditemukan"
-// 		} else {
-// 			msg = "terjadi kesalahan pada server"
-// 		}
-// 		return []book.Core{}, errors.New(msg)
-// 	}
-// 	// fmt.Println(res)
-// 	return res, nil
-// }
-
 func (bs *bookSrv) GetAll() ([]book.Core, error) {
 	res, err := bs.data.GetAll()
 	if err != nil {
@@ -109,6 +94,7 @@ func (bs *bookSrv) Delete(token interface{}, bookID int) error {
 	}
 	return nil
 }
+
 func (bs *bookSrv) MyBook(token interface{}) ([]book.Core, error) {
 	userID := helper.ExtractToken(token)
 	if userID <= 0 {
