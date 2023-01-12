@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	JWT_KEY string = ""
+	JWTKEY string = ""
 )
 
 type AppConfig struct {
@@ -87,6 +87,6 @@ func ReadEnv() *AppConfig {
 		return nil
 	}
 
-	JWT_KEY = app.jwtKey
+	JWTKEY = app.jwtKey
 	return &app
 }
