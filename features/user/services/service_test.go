@@ -36,7 +36,8 @@ func TestRegister(t *testing.T) {
 	// t.Run("Duplikat", func(t *testing.T) {
 	// 	data.On("Register", mock.Anything).Return(user.Core{}, errors.New("duplicated")).Once()
 	// 	srv := New(data)
-	// 	res, _ := srv.Register(user.Core{})
+	// 	res, err := srv.Register(user.Core{})
+	// 	assert.ErrorContains(t, err, "error")
 	// 	assert.Equal(t, "", res.Password)
 	// 	data.AssertExpectations(t)
 	// })

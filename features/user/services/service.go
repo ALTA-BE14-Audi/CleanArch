@@ -49,23 +49,20 @@ func (uuc *userUseCase) Login(email, password string) (string, user.Core, error)
 
 }
 func (uuc *userUseCase) Register(newUser user.Core) (user.Core, error) {
-	hashed, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
-	newUser.Password = string(hashed)
-	if err != nil {
-		log.Println("bcrypt error ", err.Error())
-		return user.Core{}, errors.New("password process error")
-	}
-	newUser.Password = string(hashed)
+	hashInpPassword, _ := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
+	newUser.Password = string(hashInpPassword)
 	res, err := uuc.qry.Register(newUser)
+	// log.Println(res,err)
 	if err != nil {
 		if strings.Contains(err.Error(), "duplicated") {
-			return user.Core{}, errors.New("data already exist")
+			return user.Core{}, errors.New("data already exist error")
 		}
 		return user.Core{}, errors.New("internal server error")
 	}
-
+	log.Println("OK")
 	return res, nil
 }
+
 func (uuc *userUseCase) Profile(token interface{}) (user.Core, error) {
 	id := helper.ExtractToken(token)
 	if id <= 0 {

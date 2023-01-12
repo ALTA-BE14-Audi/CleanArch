@@ -29,13 +29,12 @@ func (uq *userQuery) Login(email string) (user.Core, error) {
 	return ToCore(res), nil
 }
 func (uq *userQuery) Register(newUser user.Core) (user.Core, error) {
-	cekDupe := CoreToData(newUser)
-	err := uq.db.Where("email=?", cekDupe.Email).First(&cekDupe).Error
+	checkDup := CoreToData(newUser)
+	err := uq.db.Where("email=?", checkDup.Email).First(&checkDup).Error
 	if err == nil {
 		log.Println("email already registered")
 		return user.Core{}, errors.New("duplicated")
 	}
-
 	cnv := CoreToData(newUser)
 	err = uq.db.Create(&cnv).Error
 	if err != nil {

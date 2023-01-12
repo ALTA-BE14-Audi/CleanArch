@@ -38,7 +38,7 @@ func (uc *userControll) Register() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		input := RegisterRequest{}
 		if err := c.Bind(&input); err != nil {
-			return c.JSON(http.StatusBadRequest, "format inputan salah")
+			return c.JSON(http.StatusBadRequest, "format input salah")
 		}
 
 		res, err := uc.srv.Register(*ToCore(input))
@@ -48,8 +48,7 @@ func (uc *userControll) Register() echo.HandlerFunc {
 			}
 			return c.JSON(PrintErrorResponse(err.Error()))
 		}
-
-		return c.JSON(PrintSuccessReponse(http.StatusCreated, "berhasil mendaftar", res))
+		return c.JSON(PrintSuccessReponse(http.StatusCreated, "berhasil daftar", res))
 	}
 }
 func (uc *userControll) Profile() echo.HandlerFunc {
