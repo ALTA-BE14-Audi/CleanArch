@@ -20,18 +20,45 @@ func New(db *gorm.DB) book.BookData {
 	}
 }
 
+// func (bd *bookData) Add(userID int, newBook book.Core) (book.Core, error) {
+// 	cnv := CoreToData(newBook)
+// 	cnv.UserID = uint(userID)
+// 	err := bd.db.Create(&cnv).Error
+// 	if err != nil {
+// 		return book.Core{}, err
+// 	}
+
+// 	newBook.ID = cnv.ID
+
+// 	return newBook, nil
+// }
+
 func (bd *bookData) Add(userID int, newBook book.Core) (book.Core, error) {
 	cnv := CoreToData(newBook)
 	cnv.UserID = uint(userID)
 	err := bd.db.Create(&cnv).Error
 	if err != nil {
-		return book.Core{}, err
+		log.Println("error insert user", err.Error())
+		return book.Core{}, errors.New("error insert user")
 	}
 
 	newBook.ID = cnv.ID
 
+	//isi Pemilik pakai angka
+	// IDUser := strconv.Itoa(int(cnv.UserID))
+	// newBook.Pemilik = IDUser
+
+	qry := User{}
+	err2 := bd.db.Where("id=?", userID).First(&qry).Error
+	if err2 != nil {
+		log.Println("no id found")
+		return book.Core{}, errors.New("data not found")
+	}
+	newBook.Pemilik = qry.Nama
+
 	return newBook, nil
 }
+
 func (bd *bookData) Update(tokenID int, bookID int, updatedData book.Core) (book.Core, error) {
 	cnv := CoreToData(updatedData)
 	qry := bd.db.Where("id = ?", bookID).Updates(&cnv)
@@ -40,12 +67,20 @@ func (bd *bookData) Update(tokenID int, bookID int, updatedData book.Core) (book
 		return book.Core{}, errors.New("not found")
 	}
 
-	if err := qry.Error; err != nil {
+	err := qry.Error
+	if err != nil {
 		log.Println("update book query error :", err.Error())
 		return book.Core{}, err
 	}
-
-	return ToCore(cnv), nil
+	log.Println(tokenID)
+	qry2 := User{}
+	err2 := bd.db.Where("id=?", tokenID).First(&qry2).Error
+	if err2 != nil {
+		log.Println("no id found")
+		return book.Core{}, errors.New("data not found")
+	}
+	updatedData.Pemilik = qry2.Nama
+	return updatedData, nil
 }
 func (bd *bookData) GetAll() ([]book.Core, error) {
 	var books []Books
@@ -121,6 +156,22 @@ func (bd *bookData) Delete(userID int, bookID int) error {
 }
 
 func (bd *bookData) MyBook(userID int) ([]book.Core, error) {
+	res := []Books{}
+	err := bd.db.Where("user_id = ?", userID).Find(&res).Error
+	if err != nil {
+		log.Println("no result")
+		return []book.Core{}, errors.New("data not found")
+	}
+	result := []book.Core{}
+	for i := 0; i < len(res); i++ {
+		tmp := res[i]
+		result = append(result, ToCore(tmp))
+	}
+
+	return result, nil
+}
+
+func (bd *bookData) Book(userID int) ([]book.Core, error) {
 	res := []Books{}
 	err := bd.db.Where("user_id = ?", userID).Find(&res).Error
 	if err != nil {

@@ -1,21 +1,11 @@
 package book
 
-import "github.com/labstack/echo/v4"
-
 type Core struct {
 	ID          uint
 	Judul       string
 	TahunTerbit int
 	Penulis     string
 	Pemilik     string
-}
-
-type BookHandler interface {
-	Add() echo.HandlerFunc
-	Update() echo.HandlerFunc
-	MyBook() echo.HandlerFunc
-	GetAll() echo.HandlerFunc
-	Delete() echo.HandlerFunc
 }
 
 type BookService interface {
