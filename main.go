@@ -24,7 +24,7 @@ func main() {
 	userSrv := services.New(userData)
 	userHdl := handler.New(userSrv)
 
-	bookData := bd.New(db)
+	bookData := bd.NewStorage(db)
 	bookSrv := bsrv.New(bookData)
 	bookHdl := bhl.New(bookSrv)
 
@@ -37,6 +37,8 @@ func main() {
 	e.POST("/register", userHdl.Register())
 	e.POST("/login", userHdl.Login())
 	e.GET("/users", userHdl.Profile(), middleware.JWT([]byte(config.JWT_KEY)))
+	e.PATCH("/users", userHdl.Update(), middleware.JWT([]byte(config.JWT_KEY)))
+	e.DELETE("/users", userHdl.Delete(), middleware.JWT([]byte(config.JWT_KEY)))
 
 	e.POST("/books", bookHdl.Add(), middleware.JWT([]byte(config.JWT_KEY)))
 	e.GET("/books", bookHdl.GetAll(), middleware.JWT([]byte(config.JWT_KEY)))
