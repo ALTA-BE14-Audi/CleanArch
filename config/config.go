@@ -72,21 +72,6 @@ func ReadEnv() *AppConfig {
 		}
 	}
 
-	viper.AddConfigPath(".")
-	viper.SetConfigName("local")
-	viper.SetConfigType("env")
-
-	err := viper.ReadInConfig()
-	if err != nil {
-		log.Println("error read config : ", err.Error())
-		return nil
-	}
-	err = viper.Unmarshal(&app)
-	if err != nil {
-		log.Println("error parse config : ", err.Error())
-		return nil
-	}
-
 	JWT_KEY = app.jwtKey
 	return &app
 }
